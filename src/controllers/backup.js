@@ -17,6 +17,11 @@ const getBackup = async (req, res) => {
     `;
 
     const [uidRows] = await mysqlAccounts.promise().query(uidQuery, [username]);
+    if (uidRows.length === 0) {
+      res.status(500).send("Username not found");
+      return;
+    }
+
     const uid = uidRows[0].uid;
 
     const query = `

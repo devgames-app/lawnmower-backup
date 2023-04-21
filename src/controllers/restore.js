@@ -13,6 +13,11 @@ const restoreBackup = async (req, res) => {
     const [uidRows] = await mysqlAccounts
       .promise()
       .query(uidQuery, [newusername]);
+    if (uidRows.length === 0) {
+      res.status(500).send("Username not found");
+      return;
+    }
+
     const newid = uidRows[0].uid;
     const backup = req.body;
 
