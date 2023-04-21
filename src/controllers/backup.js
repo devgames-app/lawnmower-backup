@@ -1,7 +1,7 @@
 const path = require("path");
 const zlib = require("zlib");
 const moment = require("moment");
-const connection = require("../database");
+const { mysqlAccounts, mysqlUser } = require("../database");
 
 const showBackup = (req, res) => {
   res.sendFile(path.resolve(__dirname + "/../views/backup.html"));
@@ -16,7 +16,7 @@ const getBackup = async (req, res) => {
       WHERE username = ?;
     `;
 
-    const [uidRows] = await connection.promise().query(uidQuery, [username]);
+    const [uidRows] = await mysqlAccounts.promise().query(uidQuery, [username]);
     const uid = uidRows[0].uid;
 
     const query = `
@@ -29,7 +29,7 @@ const getBackup = async (req, res) => {
       WHERE uid = ?;
     `;
 
-    const [rows] = await connection.promise().query(query, [uid, uid]);
+    const [rows] = await mysqlUser.promise().query(query, [uid, uid]);
 
     const player_data = rows
       .filter((row) => row.nickname)

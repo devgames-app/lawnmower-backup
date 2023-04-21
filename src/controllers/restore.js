@@ -1,5 +1,5 @@
 const moment = require("moment");
-const connection = require("../database");
+const { mysqlAccounts, mysqlUser } = require("../database");
 
 const restoreBackup = async (req, res) => {
   try {
@@ -10,11 +10,13 @@ const restoreBackup = async (req, res) => {
       WHERE username = ?;
     `;
 
-    const [uidRows] = await connection.promise().query(uidQuery, [newusername]);
+    const [uidRows] = await mysqlAccounts
+      .promise()
+      .query(uidQuery, [newusername]);
     const newid = uidRows[0].uid;
     const backup = req.body;
 
-    connection.beginTransaction((err) => {
+    mysqlUser.beginTransaction((err) => {
       if (err) {
         console.error("Error starting transaction: ", err);
         res.status(500).send("Error starting transaction");
@@ -28,26 +30,26 @@ const restoreBackup = async (req, res) => {
         newid % 10
       } WHERE uid = ?;`;
 
-      connection.query(deletePlayerDataQuery, [newid], (err) => {
+      mysqlUser.query(deletePlayerDataQuery, [newid], (err) => {
         if (err) {
           console.error(
             "Error deleting old data from t_player_data table: ",
             err
           );
-          connection.rollback();
+          mysqlUser.rollback();
           res
             .status(500)
             .send("Error deleting old data from t_player_data table");
           return;
         }
 
-        connection.query(deleteBlockDataQuery, [newid], (err) => {
+        mysqlUser.query(deleteBlockDataQuery, [newid], (err) => {
           if (err) {
             console.error(
               "Error deleting old data from t_block_data table: ",
               err
             );
-            connection.rollback();
+            mysqlUser.rollback();
             res
               .status(500)
               .send("Error deleting old data from t_block_data table");
@@ -79,13 +81,13 @@ const restoreBackup = async (req, res) => {
             newid % 10
           } (uid, nickname, level, exp, vip_point, json_data, bin_data, extra_bin_data, data_version, tag_list, create_time, last_save_time, is_delete, reserved_1, reserved_2, before_login_bin_data) VALUES ?`;
 
-          connection.query(insertPlayerDataQuery, [playerDataValues], (err) => {
+          mysqlUser.query(insertPlayerDataQuery, [playerDataValues], (err) => {
             if (err) {
               console.error(
                 "Error inserting backup data into player_data table: ",
                 err
               );
-              connection.rollback();
+              mysqlUser.rollback();
               res
                 .status(500)
                 .send("Error inserting backup data into player_data table");
@@ -103,23 +105,23 @@ const restoreBackup = async (req, res) => {
               newid % 10
             } (uid, block_id, data_version, bin_data, last_save_time) VALUES ?`;
 
-            connection.query(insertBlockDataQuery, [blockDataValues], (err) => {
+            mysqlUser.query(insertBlockDataQuery, [blockDataValues], (err) => {
               if (err) {
                 console.error(
                   "Error while inserting block_data backup data: ",
                   err
                 );
-                connection.rollback();
+                mysqlUser.rollback();
                 res
                   .status(500)
                   .send("Error while inserting block_data backup data:");
                 return;
               }
 
-              connection.commit((err) => {
+              mysqlUser.commit((err) => {
                 if (err) {
                   console.error("Error finalizing transaction: ", err);
-                  connection.rollback();
+                  mysqlUser.rollback();
                   res.status(500).send("Error finalizing transaction");
                   return;
                 }
