@@ -5,7 +5,7 @@ const { getBackup, showBackup } = require("../controllers/backup");
 const { restoreBackup } = require("../controllers/restore");
 
 router.get("/", showBackup);
-router.get("/backup/:uid", getBackup);
-router.post("/restore/:newid", restoreBackup);
+router.get("/backup/:username", getBackup);
+router.post("/restore/:newusername", restoreBackup);
 
 module.exports = router;

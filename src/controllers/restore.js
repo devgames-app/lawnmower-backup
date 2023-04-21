@@ -1,9 +1,17 @@
 const moment = require("moment");
 const connection = require("../database");
 
-const restoreBackup = (req, res) => {
+const restoreBackup = async (req, res) => {
   try {
-    const { newid } = req.params;
+    const { newusername } = req.params;
+
+    const uidQuery = `
+      SELECT uid FROM accounts
+      WHERE username = ?;
+    `;
+
+    const [uidRows] = await connection.promise().query(uidQuery, [newusername]);
+    const newid = uidRows[0].uid;
     const backup = req.body;
 
     connection.beginTransaction((err) => {
@@ -116,7 +124,7 @@ const restoreBackup = (req, res) => {
                   return;
                 }
                 res.send(
-                  `Backup for the new id ${newid} successfully restored!`
+                  `Backup successfully restored in ${newusername}'s account!`
                 );
               });
             });

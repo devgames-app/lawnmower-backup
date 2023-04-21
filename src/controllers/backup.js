@@ -9,7 +9,15 @@ const showBackup = (req, res) => {
 
 const getBackup = async (req, res) => {
   try {
-    const { uid } = req.params;
+    const { username } = req.params;
+
+    const uidQuery = `
+      SELECT uid FROM accounts
+      WHERE username = ?;
+    `;
+
+    const [uidRows] = await connection.promise().query(uidQuery, [username]);
+    const uid = uidRows[0].uid;
 
     const query = `
       SELECT uid, nickname, level, exp, vip_point, json_data, bin_data, extra_bin_data, data_version, tag_list, create_time, last_save_time, is_delete, reserved_1, reserved_2, before_login_bin_data, null as block_id
