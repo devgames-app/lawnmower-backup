@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 type Props = {
   id: string;
   placeholder: string;
 };
 
-const Input = ({ id, placeholder }: Props) => {
+const Input = ({ id, placeholder, ...props }: Props) => {
   return (
     <input
       type='text'
@@ -14,8 +14,9 @@ const Input = ({ id, placeholder }: Props) => {
       className='block w-full border px-6 py-4 rounded-full focus:outline-none'
       placeholder={placeholder}
       required
+      {...props}
     />
   );
 };
 
-export default Input;
+export default memo(Input);
