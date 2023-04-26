@@ -4,11 +4,14 @@ const useInput = () => {
   const [value, setValue] = useState<string>('');
 
   return {
-    value,
-    onChange: useCallback(
-      ({ target }: ChangeEvent<HTMLInputElement>) => setValue(target.value),
-      []
-    ),
+    setValue,
+    inputProps: {
+      onChange: useCallback(
+        ({ target }: ChangeEvent<HTMLInputElement>) => setValue(target.value),
+        []
+      ),
+      value,
+    },
   };
 };
 
