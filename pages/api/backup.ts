@@ -24,7 +24,6 @@ export default async function handler(
         .query(uidQuery, [username]);
       if (uidRows.length === 0) {
         res.status(500).json({ message: 'Username not found' });
-        return;
       }
 
       const uid = uidRows[0].uid;

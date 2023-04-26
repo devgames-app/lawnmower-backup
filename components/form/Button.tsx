@@ -19,6 +19,7 @@ const Button = ({ children, id, spanId, hidden, loading }: Props) => {
         (loading ? ' loading' : '')
       }
       type='submit'
+      disabled={loading}
     >
       {spanId ? (
         <span

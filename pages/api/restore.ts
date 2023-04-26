@@ -9,7 +9,8 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   try {
-    const { newusername } = req.body;
+    const { newusername, backup: bodyBackup } = req.body;
+    const backup = JSON.parse(JSON.parse(bodyBackup));
 
     const uidQuery = `
       SELECT uid FROM accounts
@@ -21,17 +22,15 @@ export default async function handler(
       .query(uidQuery, [newusername]);
     if (uidRows.length === 0) {
       res.status(500).json({ message: 'Username not found' });
-      return;
     }
 
     const newid = uidRows[0].uid;
-    const backup = req.body;
+    // const backup = req.body;
 
     mysqlUser.beginTransaction((err: Error) => {
       if (err) {
         console.error('Error starting transaction: ', err);
         res.status(500).json({ message: 'Error starting transaction' });
-        return;
       }
 
       const deletePlayerDataQuery = `DELETE FROM t_player_data_${
@@ -51,7 +50,6 @@ export default async function handler(
           res.status(500).json({
             message: 'Error deleting old data from t_player_data table',
           });
-          return;
         }
 
         mysqlUser.query(deleteBlockDataQuery, [newid], (err: Error) => {
@@ -64,7 +62,6 @@ export default async function handler(
             res.status(500).json({
               message: 'Error deleting old data from t_block_data table',
             });
-            return;
           }
 
           const playerDataValues = backup.player_data.map((row: string[]) => {
@@ -105,7 +102,6 @@ export default async function handler(
                 res.status(500).json({
                   message: 'Error inserting backup data into player_data table',
                 });
-                return;
               }
 
               const blockDataValues = backup.block_data.map((row: string[]) => [
@@ -132,7 +128,6 @@ export default async function handler(
                     res.status(500).json({
                       message: 'Error while inserting block_data backup data:',
                     });
-                    return;
                   }
 
                   mysqlUser.commit((err: Error) => {
@@ -140,7 +135,6 @@ export default async function handler(
                       console.error('Error finalizing transaction: ', err);
                       mysqlUser.rollback();
                       res.status(500).send('Error finalizing transaction');
-                      return;
                     }
                     res.send(
                       `Backup successfully restored in ${newusername}'s account!`
