@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-#submit-backup.loading,
-#submit-restore.loading {
+.loading,
+.loading {
   pointer-events: none;
   background-color: gray;
 }
 
-#submit-backup.loading:before,
-#submit-restore.loading:before {
+.loading:before,
+.loading:before {
   content: '';
   box-sizing: border-box;
   position: absolute;

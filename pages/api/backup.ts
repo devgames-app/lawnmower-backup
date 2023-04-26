@@ -1,8 +1,8 @@
 import { IBlockData, IPlayerData } from '@/types/generalTypes';
 import type { NextApiRequest, NextApiResponse } from 'next';
-const moment = require('moment');
-const zlib = require('zlib');
-const { mysqlAccounts, mysqlUser } = require('@/server/database');
+import moment from 'moment';
+import zlib from 'zlib';
+import { mysqlAccounts, mysqlUser } from '@/server/database';
 
 type Data = Buffer | { message: string };
 

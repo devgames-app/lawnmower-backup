@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-const moment = require('moment');
-const { mysqlAccounts, mysqlUser } = require('@/server/database');
+import moment from 'moment';
+import { mysqlAccounts, mysqlUser } from '@/server/database';
 
-type Data = Buffer | { message: string } | string;
+type Data = { message: string } | string;
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,7 +25,6 @@ export default async function handler(
     }
 
     const newid = uidRows[0].uid;
-    // const backup = req.body;
 
     mysqlUser.beginTransaction((err: Error) => {
       if (err) {
