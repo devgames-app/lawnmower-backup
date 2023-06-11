@@ -1,4 +1,4 @@
-import useInput from '@/custom-hooks/useInput';
+import useInput from '@/hooks/useInput';
 import Head from 'next/head';
 import BackupForm from '@/components/form/BackupForm';
 import RestoreForm from '@/components/form/RestoreForm';

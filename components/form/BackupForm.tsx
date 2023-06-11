@@ -1,8 +1,8 @@
 import React, { ChangeEvent, Dispatch, FormEvent, SetStateAction } from 'react';
 import Input from './Input';
 import Button from './Button';
-import useFetch from '@/custom-hooks/useFetch';
-import useInput from '@/custom-hooks/useInput';
+import useFetch from '@/hooks/useFetch';
+import useInput from '@/hooks/useInput';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { fireSwal } from '@/utils/fireSwal';

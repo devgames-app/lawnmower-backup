@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import Input from './Input';
 import Button from './Button';
-import useInput from '@/custom-hooks/useInput';
-import useFetch from '@/custom-hooks/useFetch';
+import useInput from '@/hooks/useInput';
+import useFetch from '@/hooks/useFetch';
 import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
 import { fireSwal } from '@/utils/fireSwal';
@@ -61,7 +61,12 @@ const RestoreForm = ({ jsonInput }: Props) => {
   );
 
   const handleCopyJsonToClipboard = useCallback(() => {
-    navigator.clipboard.writeText(jsonInput.inputProps.value);
+    const textarea = document.createElement('textarea');
+    textarea.value = jsonInput.inputProps.value;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
     fireSwal(MySwal, 'Info', 'JSON copied to clipboard!', 'success');
   }, [MySwal, jsonInput.inputProps.value]);
 
