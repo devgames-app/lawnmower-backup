@@ -1,9 +1,9 @@
 FROM node:alpine
 
-ENV NODE_ENV=production
+COPY package.json .
 
-COPY ["package.json", "package-lock.json*", "./"]
+RUN npm i
 
-RUN npm install --omit=dev
+COPY . .
 
 WORKDIR /app
